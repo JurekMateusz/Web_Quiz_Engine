@@ -1,6 +1,6 @@
 package engine.controllers;
 
-import engine.entities.Quiz;
+import engine.entity.Quiz;
 import engine.exceptions.QuizNotFoundException;
 import engine.todo.QuizFeedback;
 import engine.todo.QuizFromUser;
@@ -22,7 +22,7 @@ public class QuizController {
 
     @PostMapping("/api/quizzes/{id}/solve")
     public QuizFeedback correctAnswerCheck(@PathVariable long id, @RequestParam int answer) {
-        return isCorrectAnswer(id, answer) ? QuizFeedback.getSuccess() : QuizFeedback.getFailure();
+        return isCorrectAnswer(id, answer) ? QuizFeedback.getSUCCESS() : QuizFeedback.getFAILURE();
     }
 
     private boolean isCorrectAnswer(long id, int answer) {
