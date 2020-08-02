@@ -1,60 +1,43 @@
 package engine.controllers;
 
-import engine.entity.Quiz;
-import engine.exceptions.QuizNotFoundException;
-import engine.todo.QuizFeedback;
-import engine.todo.QuizFromUser;
-import engine.todo.QuizToUser;
+import engine.dto.QuizFeedback;
+import engine.dto.QuizFromUser;
+import engine.dto.QuizToUser;
+import engine.dto.UserAnswer;
+import engine.services.QuizService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
+import javax.validation.Valid;
+import javax.validation.constraints.NotEmpty;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @RestController
 public class QuizController {
-    private List<Quiz> allQuizzes;
+    private QuizService quizService;
 
-    public QuizController() {
-        allQuizzes = new ArrayList<>();
+    @Autowired
+    public QuizController(QuizService quizService) {
+        this.quizService = quizService;
     }
 
     @PostMapping("/api/quizzes/{id}/solve")
-    public QuizFeedback correctAnswerCheck(@PathVariable long id, @RequestParam int answer) {
-        return isCorrectAnswer(id, answer) ? QuizFeedback.getSUCCESS() : QuizFeedback.getFAILURE();
-    }
-
-    private boolean isCorrectAnswer(long id, int answer) {
-        Optional<Quiz> quiz = allQuizzes.stream()
-                .filter(q -> q.getId() == id)
-                .findFirst();
-        if (quiz.isEmpty()) throw new QuizNotFoundException();
-        return quiz.get().getAnswer() == answer;
+    public QuizFeedback checkAnswer(@PathVariable long id, @RequestBody UserAnswer userAnswer) {
+        return quizService.checkAnswerById(id, userAnswer);
     }
 
     @PostMapping(value = "/api/quizzes", consumes = "application/json")
-    public QuizToUser addQuiz(@RequestBody QuizFromUser quizFromUser) {
-        Quiz quiz = new Quiz(quizFromUser);
-        quiz.setId(allQuizzes.size() + 1);
-        allQuizzes.add(quiz);
-
-        return new QuizToUser(quiz);
+    public QuizToUser addQuiz(@Valid @NotEmpty @RequestBody QuizFromUser quizFromUser) {
+        return quizService.addQuiz(quizFromUser);
     }
 
     @GetMapping("/api/quizzes/{id}")
     public QuizToUser getQuiz(@PathVariable long id) {
-        try {
-            return new QuizToUser(allQuizzes.get((int) id - 1));
-        } catch (IndexOutOfBoundsException ex) {
-            throw new QuizNotFoundException();
-        }
+        return quizService.getQuizById(id);
     }
 
     @GetMapping("/api/quizzes")
     public List<QuizToUser> getAllQuizzes() {
-        return allQuizzes.stream()
-                .map(QuizToUser::new)
-                .collect(Collectors.toList());
+        return quizService.getAllQuizzes();
     }
 }

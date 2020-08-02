@@ -1,7 +1,11 @@
 package engine.entity;
 
-import engine.todo.QuizFromUser;
+import engine.dto.QuizFromUser;
 import lombok.*;
+
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 
 @Getter
 @Setter
@@ -16,7 +20,7 @@ public class Quiz {
     @NonNull
     private String[] options;
     @NonNull
-    private int answer;
+    private int[] answer;
 
     public Quiz(QuizFromUser quizFromUser) {
         this.title = quizFromUser.getTitle();

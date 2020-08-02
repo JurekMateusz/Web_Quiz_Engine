@@ -1,4 +1,4 @@
-package engine.todo;
+package engine.dto;
 
 import engine.entity.Quiz;
 import lombok.Getter;
