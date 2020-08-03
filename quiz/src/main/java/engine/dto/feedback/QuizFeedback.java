@@ -1,4 +1,4 @@
-package engine.dto;
+package engine.dto.feedback;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

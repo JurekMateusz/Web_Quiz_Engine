@@ -1,6 +1,6 @@
 package engine.controllers;
 
-import engine.dto.QuizFeedback;
+import engine.dto.feedback.QuizFeedback;
 import engine.dto.QuizFromUser;
 import engine.dto.QuizToUser;
 import engine.dto.UserAnswer;

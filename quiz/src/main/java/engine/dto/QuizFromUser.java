@@ -1,12 +1,13 @@
 package engine.dto;
 
-import engine.entity.Quiz;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -18,13 +19,7 @@ public class QuizFromUser {
     private String text;
     @Size(min = 2)
     @NotEmpty
-    private String[] options;
-    private int[] answer = new int[0];
-
-    public QuizFromUser(Quiz quiz) {
-        this.title = quiz.getTitle();
-        this.text = quiz.getText();
-        this.options = quiz.getOptions();
-    }
+    private List<String> options;
+    private List<Integer> answer = new ArrayList<>();
 }
 

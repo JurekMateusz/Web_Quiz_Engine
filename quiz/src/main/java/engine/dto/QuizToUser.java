@@ -1,6 +1,7 @@
 package engine.dto;
 
-import engine.entity.Quiz;
+import engine.entity.quiz.Quiz;
+import engine.entity.quiz.QuizOptions;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -16,8 +17,10 @@ public class QuizToUser {
 
     public QuizToUser(Quiz quiz) {
         this.title = quiz.getTitle();
-        this.text = quiz.getText();
-        this.options = quiz.getOptions();
+        this.text = quiz.getQuestion();
+        this.options = quiz.getOptions().stream()
+                .map(QuizOptions::getContent)
+                .toArray(String[]::new);
         this.id = quiz.getId();
     }
 }
