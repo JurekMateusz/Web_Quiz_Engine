@@ -11,13 +11,14 @@ import javax.persistence.*;
 @AllArgsConstructor
 @Entity
 public class QuizAnswers {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "answer_id")
-    private long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  @Column(name = "answer_id")
+  private long id;
 
-    @ManyToOne
-    @JoinColumn(name = "quiz_id")
-    private Quiz quiz;
-    private int answer;
+  @ManyToOne
+  @JoinColumn(name = "quiz_id")
+  private Quiz quiz;
+
+  private int answer;
 }

@@ -4,27 +4,23 @@ import engine.entity.user.User;
 import engine.services.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
 @RestController
+@RequestMapping("/api")
 public class UserController {
-    private UserService userService;
+  private final UserService userService;
 
-    @Autowired
-    public UserController(UserService userService) {
-        this.userService = userService;
-    }
+  @Autowired
+  public UserController(UserService userService) {
+    this.userService = userService;
+  }
 
-    @PostMapping("/api/register")
-    @ResponseStatus(code = HttpStatus.OK)
-    public void registerUser(@RequestBody @Valid User user) {
-        userService.register(user);
-    }
+  @PostMapping("/register")
+  @ResponseStatus(code = HttpStatus.OK)
+  public void registerUser(@RequestBody @Valid User user) {
+    userService.register(user);
+  }
 }

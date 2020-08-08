@@ -1,0 +1,26 @@
+package engine.entity.complete;
+
+import engine.entity.user.User;
+import lombok.Getter;
+import lombok.Setter;
+
+import javax.persistence.*;
+import java.time.LocalDateTime;
+
+@Getter
+@Setter
+@Entity
+public class CompleteQuizInfo {
+  @Id
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  private long id;
+
+  @Column(name = "quiz_id", updatable = false, nullable = false)
+  private long quizId;
+
+  @ManyToOne
+  @JoinColumn(name = "user_id")
+  private User user;
+
+  private LocalDateTime completedAt;
+}

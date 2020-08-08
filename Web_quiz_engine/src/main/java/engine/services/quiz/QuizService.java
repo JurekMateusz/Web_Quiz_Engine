@@ -1,117 +1,110 @@
 package engine.services.quiz;
 
-import engine.dto.QuizFromUser;
-import engine.dto.QuizToUser;
-import engine.dto.UserAnswer;
-import engine.dto.feedback.QuizFeedback;
+import engine.dto.converter.Converter;
+import engine.dto.converter.ConverterFactory;
+import engine.dto.from.QuizFromUserDto;
+import engine.dto.from.UserAnswer;
+import engine.dto.to.QuizToUserDto;
+import engine.dto.to.feedback.AnswerFeedback;
 import engine.entity.quiz.Quiz;
 import engine.entity.quiz.QuizAnswers;
 import engine.exceptions.quiz.QuizDeleteForbiddenException;
 import engine.exceptions.quiz.QuizNotFoundException;
 import engine.repository.quiz.QuizRepository;
-import engine.security.userdetails.UserPrincipal;
 import engine.services.user.UserService;
+import engine.services.utils.AuthenticatedUser;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AnonymousAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import java.util.stream.StreamSupport;
 
 @Service
 public class QuizService {
-    private QuizRepository quizRepository;
-    private UserService userService;
+  private final QuizRepository quizRepository;
+  private final UserService userService;
 
-    @Autowired
-    public QuizService(QuizRepository quizRepository, UserService userService) {
-        this.quizRepository = quizRepository;
-        this.userService = userService;
+  @Autowired
+  public QuizService(QuizRepository quizRepository, UserService userService) {
+    this.quizRepository = quizRepository;
+    this.userService = userService;
+  }
+
+  public AnswerFeedback checkAnswerById(long id, UserAnswer userAnswer) {
+    return checkAnswer(id, userAnswer) ? AnswerFeedback.getSUCCESS() : AnswerFeedback.getFAILURE();
+  }
+
+  private boolean checkAnswer(long id, UserAnswer userAnswer) {
+    Optional<Quiz> quiz = quizRepository.findById(id);
+    if (quiz.isEmpty()) throw new QuizNotFoundException();
+    Quiz quizWithId = quiz.get();
+    List<Integer> quizWithIdAnswers =
+        quizWithId.getAnswer().stream().map(QuizAnswers::getAnswer).collect(Collectors.toList());
+    List<Integer> userAnswers =
+        IntStream.of(userAnswer.getAnswer()).boxed().collect(Collectors.toList());
+    return userAnswers.containsAll(quizWithIdAnswers)
+        && userAnswers.size() == quizWithIdAnswers.size();
+  }
+
+  public QuizToUserDto addQuiz(QuizFromUserDto quizFromUserDto) {
+    Converter<QuizFromUserDto, Quiz> converterToQuiz =
+        ConverterFactory.getConverter(QuizFromUserDto.class);
+    Quiz quiz = converterToQuiz.convert(quizFromUserDto);
+    setIdQuizMakerIfAuthenticated(quiz);
+
+    quizRepository.save(quiz);
+
+    Converter<Quiz, QuizToUserDto> converter = ConverterFactory.getConverter(Quiz.class);
+    return converter.convert(quiz);
+  }
+
+  private void setIdQuizMakerIfAuthenticated(Quiz quiz) {
+    if (!AuthenticatedUser.isAuthenticated()) {
+      return;
     }
+    setIdQuizMaker(quiz);
+  }
 
-    public QuizFeedback checkAnswerById(long id, UserAnswer userAnswer) {
-        return checkAnswer(id, userAnswer) ? QuizFeedback.getSUCCESS() : QuizFeedback.getFAILURE();
+  private void setIdQuizMaker(Quiz quiz) {
+    long currentUserId = AuthenticatedUser.getId();
+    quiz.setUserId(currentUserId);
+  }
+
+  public QuizToUserDto getQuizById(long id) {
+    Optional<Quiz> quiz = quizRepository.findById(id);
+    if (quiz.isEmpty()) {
+      throw new QuizNotFoundException();
     }
+    Converter<Quiz, QuizToUserDto> converter = ConverterFactory.getConverter(Quiz.class);
+    return converter.convert(quiz.get());
+  }
 
-    private boolean checkAnswer(long id, UserAnswer userAnswer) {
-        Optional<Quiz> quiz = quizRepository.findById(id);
-        if (quiz.isEmpty()) throw new QuizNotFoundException();
-        Quiz quizWithId = quiz.get();
-        List<Integer> quizWithIdAnswers = quizWithId.getAnswer().stream()
-                .map(QuizAnswers::getAnswer)
-                .collect(Collectors.toList());
-        List<Integer> userAnswers = IntStream.of(userAnswer.getAnswer())
-                .boxed()
-                .collect(Collectors.toList());
-        return userAnswers.containsAll(quizWithIdAnswers) && userAnswers.size() == quizWithIdAnswers.size();
+  public Page<QuizToUserDto> getAllQuizzes(Pageable pageable) {
+    Page<Quiz> pageResult = quizRepository.findAll(pageable);
+    return convertToDta(pageResult);
+  }
+
+  private Page<QuizToUserDto> convertToDta(Page<Quiz> page) {
+    return page.map(
+        e -> {
+          Converter<Quiz, QuizToUserDto> converter = ConverterFactory.getConverter(Quiz.class);
+          return converter.convert(e);
+        });
+  }
+
+  public void delete(long id) {
+    Optional<Quiz> optionalQuiz = quizRepository.findById(id);
+    if (optionalQuiz.isEmpty()) throw new QuizNotFoundException();
+    Quiz quiz = optionalQuiz.get();
+    long idAuthenticatedUser = AuthenticatedUser.getId();
+    long quizUserId = quiz.getUserId();
+    if (idAuthenticatedUser != quizUserId) {
+      throw new QuizDeleteForbiddenException();
     }
-
-    public QuizToUser addQuiz(QuizFromUser quizFromUser) {
-        Quiz quiz = new Quiz(quizFromUser);
-        setIdQuizMakerIfAuthenticated(quiz);
-        quizRepository.save(quiz);
-        return new QuizToUser(quiz);
-    }
-
-    private void setIdQuizMakerIfAuthenticated(Quiz quiz) {
-        if (!isAuthenticated()) {
-            return;
-        }
-        setIdQuizMaker(quiz);
-    }
-
-    private boolean isAuthenticated() {
-        Authentication authentication = getAuthentication();
-        return !(authentication instanceof AnonymousAuthenticationToken);
-    }
-
-
-    private void setIdQuizMaker(Quiz quiz) {
-        long currentUserId = findIdAuthenticatedUser();
-        quiz.setUserId(currentUserId);
-    }
-
-    private long findIdAuthenticatedUser() {
-        Authentication authentication = getAuthentication();
-        return ((UserPrincipal) authentication.getPrincipal()).getId();
-    }
-
-
-    private Authentication getAuthentication() {
-        return SecurityContextHolder.getContext().getAuthentication();
-    }
-
-    public QuizToUser getQuizById(long id) {
-        Optional<Quiz> quiz = quizRepository.findById(id);
-        if (quiz.isEmpty()) {
-            throw new QuizNotFoundException();
-        }
-        return new QuizToUser(quiz.get());
-    }
-
-    public List<QuizToUser> getAllQuizzes() {
-        Iterable<Quiz> quizzes = quizRepository.findAll();
-        return StreamSupport.stream(quizzes.spliterator(), false)
-                .map(QuizToUser::new)
-                .collect(Collectors.toList());
-    }
-
-    public void delete(long id) {
-        Optional<Quiz> optionalQuiz = quizRepository.findById(id);
-        if (optionalQuiz.isEmpty()) throw new QuizNotFoundException();
-        Quiz quiz = optionalQuiz.get();
-        long idAuthenticatedUser = findIdAuthenticatedUser();
-        long quizUserId = quiz.getUserId();
-        if (idAuthenticatedUser != quizUserId) {
-            throw new QuizDeleteForbiddenException();
-        }
-        quizRepository.deleteById(quiz.getId());
-    }
-
+    quizRepository.deleteById(quiz.getId());
+  }
 }
-

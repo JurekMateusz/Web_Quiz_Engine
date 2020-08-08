@@ -12,25 +12,25 @@ import java.util.Optional;
 
 @Service
 public class UserService {
-    private static final PasswordEncoder PASSWORD_ENCODER = new BCryptPasswordEncoder();
-    private UserRepository userRepository;
+  private static final PasswordEncoder PASSWORD_ENCODER = new BCryptPasswordEncoder();
+  private final UserRepository userRepository;
 
-    @Autowired
-    public UserService(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
+  @Autowired
+  public UserService(UserRepository userRepository) {
+    this.userRepository = userRepository;
+  }
 
-    public void register(User user) {
-        if (userRepository.existsByEmail(user.getEmail())) {
-            throw new RegisterFailException();
-        }
-        String encryptedPassword = PASSWORD_ENCODER.encode(user.getPassword());
-        user.setPassword(encryptedPassword);
-        userRepository.save(user);
+  public void register(User user) {
+    if (userRepository.existsByEmail(user.getEmail())) {
+      throw new RegisterFailException();
     }
+    String encryptedPassword = PASSWORD_ENCODER.encode(user.getPassword());
+    user.setPassword(encryptedPassword);
+    userRepository.save(user);
+  }
 
-    public long getIdUserByEmail(String email) {
-        Optional<User> userOptional = userRepository.findAllByEmail(email);
-        return userOptional.isPresent() ? userOptional.get().getId() : null;
-    }
+  public User getUserById(long id) {
+    Optional<User> userOptional = userRepository.findById(id);
+    return userOptional.orElse(null);
+  }
 }
