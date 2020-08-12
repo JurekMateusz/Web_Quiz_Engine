@@ -1,0 +1,10 @@
+*.idea
+*target/
+*.iml
+out/
+*.jar
+context.xml
+
+directory.txt
+find.txt
+*.s3db

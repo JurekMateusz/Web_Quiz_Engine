@@ -1,6 +1,9 @@
 package engine.entities;
 
+import engine.todo.QuizFromUser;
+
 public class Quiz {
+    private long id;
     private String title;
     private String text;
     private String[] options;
@@ -14,6 +17,20 @@ public class Quiz {
         this.text = text;
         this.options = options.clone();
         this.answer = answer;
+    }
+    public Quiz(QuizFromUser quizFromUser){
+        this.title = quizFromUser.getTitle();
+        this.text = quizFromUser.getText();
+        this.options = quizFromUser.getOptions();
+        this.answer = quizFromUser.getAnswer();
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public String getTitle() {
