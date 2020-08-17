@@ -11,15 +11,16 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 @Service
-public class UserService {
+public class UserServiceImpl implements UserService {
   private static final PasswordEncoder PASSWORD_ENCODER = new BCryptPasswordEncoder();
   private final UserRepository userRepository;
 
   @Autowired
-  public UserService(UserRepository userRepository) {
+  public UserServiceImpl(UserRepository userRepository) {
     this.userRepository = userRepository;
   }
 
+  @Override
   public void register(User user) {
     if (userRepository.existsByEmail(user.getEmail())) {
       throw new RegisterFailException();
@@ -29,6 +30,7 @@ public class UserService {
     userRepository.save(user);
   }
 
+  @Override
   public User getUserById(long id) {
     Optional<User> userOptional = userRepository.findById(id);
     return userOptional.orElse(null);

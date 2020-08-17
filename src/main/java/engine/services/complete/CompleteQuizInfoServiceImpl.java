@@ -6,7 +6,7 @@ import engine.dto.to.CompleteQuizInfoDto;
 import engine.entity.complete.CompleteQuizInfo;
 import engine.entity.user.User;
 import engine.repository.quiz.CompleteQuizInfoRepository;
-import engine.services.user.UserService;
+import engine.services.user.UserServiceImpl;
 import engine.services.utils.AuthenticatedUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -18,16 +18,18 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 
 @Service
-public class CompleteQuizInfoService {
-  private final UserService userService;
+public class CompleteQuizInfoServiceImpl implements CompleteQuizInfoService {
+  private final UserServiceImpl userService;
   private final CompleteQuizInfoRepository repository;
 
   @Autowired
-  public CompleteQuizInfoService(UserService userService, CompleteQuizInfoRepository repository) {
+  public CompleteQuizInfoServiceImpl(
+      UserServiceImpl userService, CompleteQuizInfoRepository repository) {
     this.userService = userService;
     this.repository = repository;
   }
 
+  @Override
   public void addIdQuizToUserCompletedQuizzes(long quizId) {
     CompleteQuizInfo quizInfo = createQuizInfo(quizId);
     repository.save(quizInfo);
@@ -42,6 +44,7 @@ public class CompleteQuizInfoService {
     return quizInfo;
   }
 
+  @Override
   public Page<CompleteQuizInfoDto> getAll(int pageNo, int pageSize, String sortBy) {
     long id = AuthenticatedUser.getId();
     Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(sortBy).descending());

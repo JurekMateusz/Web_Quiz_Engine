@@ -19,50 +19,50 @@ import javax.validation.Valid;
 
 @RestController
 public class QuizController {
-    private final QuizService quizService;
-    private final CompleteQuizInfoService quizInfoService;
+  private final QuizService quizService;
+  private final CompleteQuizInfoService quizInfoService;
 
-    @Autowired
-    public QuizController(QuizService quizService, CompleteQuizInfoService completeQuizInfoService) {
-        this.quizService = quizService;
-        this.quizInfoService = completeQuizInfoService;
-    }
+  @Autowired
+  public QuizController(QuizService quizService, CompleteQuizInfoService completeQuizInfoService) {
+    this.quizService = quizService;
+    this.quizInfoService = completeQuizInfoService;
+  }
 
-    @PostMapping(QuizzesMapping.CHECK_ANSWER)
-    public AnswerFeedback checkAnswer(@PathVariable long id, @RequestBody UserAnswer userAnswer) {
-        AnswerFeedback answerFeedback = quizService.checkAnswerById(id, userAnswer);
-        if (answerFeedback.isSuccess()) {
-            quizInfoService.addIdQuizToUserCompletedQuizzes(id);
-        }
-        return answerFeedback;
+  @PostMapping(QuizzesMapping.CHECK_ANSWER)
+  public AnswerFeedback checkAnswer(@PathVariable long id, @RequestBody UserAnswer userAnswer) {
+    AnswerFeedback answerFeedback = quizService.checkAnswerById(id, userAnswer);
+    if (answerFeedback.isSuccess()) {
+      quizInfoService.addIdQuizToUserCompletedQuizzes(id);
     }
+    return answerFeedback;
+  }
 
-    @PostMapping(path = QuizzesMapping.BASIC_QUIZZES_PATH, consumes = Parameters.JSON)
-    public QuizToUserDto addQuiz(@RequestBody @Valid QuizFromUserDto quizFromUser) {
-        return quizService.addQuiz(quizFromUser);
-    }
+  @PostMapping(path = QuizzesMapping.BASIC_QUIZZES_PATH, consumes = Parameters.JSON)
+  public QuizToUserDto addQuiz(@RequestBody @Valid QuizFromUserDto quizFromUser) {
+    return quizService.addQuiz(quizFromUser);
+  }
 
-    @GetMapping(QuizzesMapping.QUIZ_BY_ID)
-    public QuizToUserDto getQuiz(@PathVariable long id) {
-        return quizService.getQuizById(id);
-    }
+  @GetMapping(QuizzesMapping.QUIZ_BY_ID)
+  public QuizToUserDto getQuiz(@PathVariable long id) {
+    return quizService.getQuizById(id);
+  }
 
-    @GetMapping(QuizzesMapping.BASIC_QUIZZES_PATH)
-    public Page<QuizToUserDto> getAllQuizzes(Pageable pageable) {
-        return quizService.getAllQuizzes(pageable);
-    }
+  @GetMapping(QuizzesMapping.BASIC_QUIZZES_PATH)
+  public Page<QuizToUserDto> getAllQuizzes(Pageable pageable) {
+    return quizService.getAllQuizzes(pageable);
+  }
 
-    @GetMapping(QuizzesMapping.ALL_COMPLETED_QUIZZES)
-    public Page<CompleteQuizInfoDto> getAllCompleted(
-            @RequestParam(required = false, defaultValue = "0") int page,
-            @RequestParam(required = false, defaultValue = "10") int size,
-            @RequestParam(required = false, defaultValue = "completedAt") String sortBy) {
-        return quizInfoService.getAll(page, size, sortBy);
-    }
+  @GetMapping(QuizzesMapping.ALL_COMPLETED_QUIZZES)
+  public Page<CompleteQuizInfoDto> getAllCompleted(
+      @RequestParam(required = false, defaultValue = "0") int page,
+      @RequestParam(required = false, defaultValue = "10") int size,
+      @RequestParam(required = false, defaultValue = "completedAt") String sortBy) {
+    return quizInfoService.getAll(page, size, sortBy);
+  }
 
-    @DeleteMapping(QuizzesMapping.DELETE_QUIZ)
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteQuiz(@PathVariable long id) {
-        quizService.delete(id);
-    }
+  @DeleteMapping(QuizzesMapping.DELETE_QUIZ)
+  @ResponseStatus(HttpStatus.NO_CONTENT)
+  public void deleteQuiz(@PathVariable long id) {
+    quizService.delete(id);
+  }
 }
