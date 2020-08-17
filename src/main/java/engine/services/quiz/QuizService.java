@@ -11,7 +11,6 @@ import engine.entity.quiz.QuizAnswers;
 import engine.exceptions.quiz.QuizDeleteForbiddenException;
 import engine.exceptions.quiz.QuizNotFoundException;
 import engine.repository.quiz.QuizRepository;
-import engine.services.user.UserService;
 import engine.services.utils.AuthenticatedUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -25,86 +24,84 @@ import java.util.stream.IntStream;
 
 @Service
 public class QuizService {
-  private final QuizRepository quizRepository;
-  private final UserService userService;
+    private final QuizRepository quizRepository;
 
-  @Autowired
-  public QuizService(QuizRepository quizRepository, UserService userService) {
-    this.quizRepository = quizRepository;
-    this.userService = userService;
-  }
-
-  public AnswerFeedback checkAnswerById(long id, UserAnswer userAnswer) {
-    return checkAnswer(id, userAnswer) ? AnswerFeedback.getSUCCESS() : AnswerFeedback.getFAILURE();
-  }
-
-  private boolean checkAnswer(long id, UserAnswer userAnswer) {
-    Optional<Quiz> quiz = quizRepository.findById(id);
-    if (quiz.isEmpty()) throw new QuizNotFoundException();
-    Quiz quizWithId = quiz.get();
-    List<Integer> quizWithIdAnswers =
-        quizWithId.getAnswer().stream().map(QuizAnswers::getAnswer).collect(Collectors.toList());
-    List<Integer> userAnswers =
-        IntStream.of(userAnswer.getAnswer()).boxed().collect(Collectors.toList());
-    return userAnswers.containsAll(quizWithIdAnswers)
-        && userAnswers.size() == quizWithIdAnswers.size();
-  }
-
-  public QuizToUserDto addQuiz(QuizFromUserDto quizFromUserDto) {
-    Converter<QuizFromUserDto, Quiz> converterToQuiz =
-        ConverterFactory.getConverter(QuizFromUserDto.class);
-    Quiz quiz = converterToQuiz.convert(quizFromUserDto);
-    setIdQuizMakerIfAuthenticated(quiz);
-
-    quizRepository.save(quiz);
-
-    Converter<Quiz, QuizToUserDto> converter = ConverterFactory.getConverter(Quiz.class);
-    return converter.convert(quiz);
-  }
-
-  private void setIdQuizMakerIfAuthenticated(Quiz quiz) {
-    if (!AuthenticatedUser.isAuthenticated()) {
-      return;
+    @Autowired
+    public QuizService(QuizRepository quizRepository) {
+        this.quizRepository = quizRepository;
     }
-    setIdQuizMaker(quiz);
-  }
 
-  private void setIdQuizMaker(Quiz quiz) {
-    long currentUserId = AuthenticatedUser.getId();
-    quiz.setUserId(currentUserId);
-  }
-
-  public QuizToUserDto getQuizById(long id) {
-    Optional<Quiz> quiz = quizRepository.findById(id);
-    if (quiz.isEmpty()) {
-      throw new QuizNotFoundException();
+    public AnswerFeedback checkAnswerById(long id, UserAnswer userAnswer) {
+        return checkAnswer(id, userAnswer) ? AnswerFeedback.getSUCCESS() : AnswerFeedback.getFAILURE();
     }
-    Converter<Quiz, QuizToUserDto> converter = ConverterFactory.getConverter(Quiz.class);
-    return converter.convert(quiz.get());
-  }
 
-  public Page<QuizToUserDto> getAllQuizzes(Pageable pageable) {
-    Page<Quiz> pageResult = quizRepository.findAll(pageable);
-    return convertToDta(pageResult);
-  }
-
-  private Page<QuizToUserDto> convertToDta(Page<Quiz> page) {
-    return page.map(
-        e -> {
-          Converter<Quiz, QuizToUserDto> converter = ConverterFactory.getConverter(Quiz.class);
-          return converter.convert(e);
-        });
-  }
-
-  public void delete(long id) {
-    Optional<Quiz> optionalQuiz = quizRepository.findById(id);
-    if (optionalQuiz.isEmpty()) throw new QuizNotFoundException();
-    Quiz quiz = optionalQuiz.get();
-    long idAuthenticatedUser = AuthenticatedUser.getId();
-    long quizUserId = quiz.getUserId();
-    if (idAuthenticatedUser != quizUserId) {
-      throw new QuizDeleteForbiddenException();
+    private boolean checkAnswer(long id, UserAnswer userAnswer) {
+        Optional<Quiz> quiz = quizRepository.findById(id);
+        if (quiz.isEmpty()) throw new QuizNotFoundException();
+        Quiz quizWithId = quiz.get();
+        List<Integer> quizWithIdAnswers =
+                quizWithId.getAnswer().stream().map(QuizAnswers::getAnswer).collect(Collectors.toList());
+        List<Integer> userAnswers =
+                IntStream.of(userAnswer.getAnswer()).boxed().collect(Collectors.toList());
+        return userAnswers.containsAll(quizWithIdAnswers)
+                && userAnswers.size() == quizWithIdAnswers.size();
     }
-    quizRepository.deleteById(quiz.getId());
-  }
+
+    public QuizToUserDto addQuiz(QuizFromUserDto quizFromUserDto) {
+        Converter<QuizFromUserDto, Quiz> converterToQuiz =
+                ConverterFactory.getConverter(QuizFromUserDto.class);
+        Quiz quiz = converterToQuiz.convert(quizFromUserDto);
+        setIdQuizMakerIfAuthenticated(quiz);
+
+        quizRepository.save(quiz);
+
+        Converter<Quiz, QuizToUserDto> converter = ConverterFactory.getConverter(Quiz.class);
+        return converter.convert(quiz);
+    }
+
+    private void setIdQuizMakerIfAuthenticated(Quiz quiz) {
+        if (!AuthenticatedUser.isAuthenticated()) {
+            return;
+        }
+        setIdQuizMaker(quiz);
+    }
+
+    private void setIdQuizMaker(Quiz quiz) {
+        long currentUserId = AuthenticatedUser.getId();
+        quiz.setUserId(currentUserId);
+    }
+
+    public QuizToUserDto getQuizById(long id) {
+        Optional<Quiz> quiz = quizRepository.findById(id);
+        if (quiz.isEmpty()) {
+            throw new QuizNotFoundException();
+        }
+        Converter<Quiz, QuizToUserDto> converter = ConverterFactory.getConverter(Quiz.class);
+        return converter.convert(quiz.get());
+    }
+
+    public Page<QuizToUserDto> getAllQuizzes(Pageable pageable) {
+        Page<Quiz> pageResult = quizRepository.findAll(pageable);
+        return convertToDta(pageResult);
+    }
+
+    private Page<QuizToUserDto> convertToDta(Page<Quiz> page) {
+        return page.map(
+                e -> {
+                    Converter<Quiz, QuizToUserDto> converter = ConverterFactory.getConverter(Quiz.class);
+                    return converter.convert(e);
+                });
+    }
+
+    public void delete(long id) {
+        Optional<Quiz> optionalQuiz = quizRepository.findById(id);
+        if (optionalQuiz.isEmpty()) throw new QuizNotFoundException();
+        Quiz quiz = optionalQuiz.get();
+        long idAuthenticatedUser = AuthenticatedUser.getId();
+        long quizUserId = quiz.getUserId();
+        if (idAuthenticatedUser != quizUserId) {
+            throw new QuizDeleteForbiddenException();
+        }
+        quizRepository.deleteById(quiz.getId());
+    }
 }

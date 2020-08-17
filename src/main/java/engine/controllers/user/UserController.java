@@ -2,6 +2,7 @@ package engine.controllers.user;
 
 import engine.entity.user.User;
 import engine.services.user.UserService;
+import engine.util.user.UserMapping;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -9,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping("/api")
 public class UserController {
   private final UserService userService;
 
@@ -18,7 +18,7 @@ public class UserController {
     this.userService = userService;
   }
 
-  @PostMapping("/register")
+  @PostMapping(UserMapping.REGISTER_USER)
   @ResponseStatus(code = HttpStatus.OK)
   public void registerUser(@RequestBody @Valid User user) {
     userService.register(user);
