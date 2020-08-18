@@ -1,5 +1,6 @@
 package engine.controllers.quiz;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import engine.dto.from.QuizFromUserDto;
 import engine.dto.from.UserAnswer;
 import engine.dto.to.CompleteQuizInfoDto;
@@ -38,6 +39,7 @@ public class QuizController {
   }
 
   @PostMapping(path = QuizzesMapping.BASIC_QUIZZES_PATH, consumes = Parameters.JSON)
+  @ResponseStatus(HttpStatus.CREATED)
   public QuizToUserDto addQuiz(@RequestBody @Valid QuizFromUserDto quizFromUser) {
     return quizService.addQuiz(quizFromUser);
   }
@@ -46,6 +48,7 @@ public class QuizController {
   public QuizToUserDto getQuiz(@PathVariable long id) {
     return quizService.getQuizById(id);
   }
+
 
   @GetMapping(QuizzesMapping.BASIC_QUIZZES_PATH)
   public Page<QuizToUserDto> getAllQuizzes(Pageable pageable) {

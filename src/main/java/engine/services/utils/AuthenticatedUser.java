@@ -15,7 +15,7 @@ public class AuthenticatedUser {
 
   public static boolean isAuthenticated() {
     Authentication authentication = getAuthentication();
-    return !(authentication instanceof AnonymousAuthenticationToken);
+    return authentication != null && !(authentication instanceof AnonymousAuthenticationToken);
   }
 
   private static long getIdAuthenticatedUser() {
