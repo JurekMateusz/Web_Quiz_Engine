@@ -2,8 +2,8 @@ package engine.services.quiz;
 
 import engine.dto.converter.Converter;
 import engine.dto.converter.ConverterFactory;
-import engine.dto.from.QuizFromUserDto;
-import engine.dto.from.UserAnswer;
+import engine.dto.from.quiz.QuizFromUserDto;
+import engine.dto.from.quiz.UserAnswer;
 import engine.dto.to.QuizToUserDto;
 import engine.dto.to.feedback.AnswerFeedback;
 import engine.entity.quiz.Quiz;

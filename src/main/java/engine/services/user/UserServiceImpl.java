@@ -1,5 +1,8 @@
 package engine.services.user;
 
+import engine.dto.converter.Converter;
+import engine.dto.converter.ConverterFactory;
+import engine.dto.from.user.RegisterUserDto;
 import engine.entity.user.User;
 import engine.exceptions.user.RegisterFailException;
 import engine.repository.user.UserRepository;
@@ -21,13 +24,19 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public void register(User user) {
+  public void register(RegisterUserDto userDto) {
+    User user = convertDto(userDto);
     if (userRepository.existsByEmail(user.getEmail())) {
       throw new RegisterFailException();
     }
     String encryptedPassword = PASSWORD_ENCODER.encode(user.getPassword());
     user.setPassword(encryptedPassword);
     userRepository.save(user);
+  }
+
+  private User convertDto(RegisterUserDto userDto){
+    Converter<RegisterUserDto,User> converter = ConverterFactory.getConverter(userDto.getClass());
+    return  converter.convert(userDto);
   }
 
   @Override

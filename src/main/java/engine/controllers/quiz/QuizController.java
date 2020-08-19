@@ -1,8 +1,7 @@
 package engine.controllers.quiz;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import engine.dto.from.QuizFromUserDto;
-import engine.dto.from.UserAnswer;
+import engine.dto.from.quiz.QuizFromUserDto;
+import engine.dto.from.quiz.UserAnswer;
 import engine.dto.to.CompleteQuizInfoDto;
 import engine.dto.to.QuizToUserDto;
 import engine.dto.to.feedback.AnswerFeedback;

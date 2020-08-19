@@ -1,9 +1,10 @@
 package engine.services.user;
 
+import engine.dto.from.user.RegisterUserDto;
 import engine.entity.user.User;
 
 public interface UserService {
-  void register(User user);
+  void register(RegisterUserDto user);
 
   User getUserById(long id);
 }

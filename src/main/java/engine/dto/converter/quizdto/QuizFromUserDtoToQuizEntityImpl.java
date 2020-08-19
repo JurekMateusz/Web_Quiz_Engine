@@ -1,7 +1,7 @@
 package engine.dto.converter.quizdto;
 
 import engine.dto.converter.Converter;
-import engine.dto.from.QuizFromUserDto;
+import engine.dto.from.quiz.QuizFromUserDto;
 import engine.entity.quiz.Quiz;
 import engine.entity.quiz.QuizAnswers;
 import engine.entity.quiz.QuizOptions;

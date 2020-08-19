@@ -1,6 +1,6 @@
 package engine.controllers.quiz;
 
-import engine.dto.from.QuizFromUserDto;
+import engine.dto.from.quiz.QuizFromUserDto;
 import engine.dto.to.QuizToUserDto;
 
 import java.util.Collections;
