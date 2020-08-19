@@ -37,5 +37,9 @@ build/
 .mvn
 mvnw.cmd
 mvnw
+### SSH ###
+*.jks
 
 *.db
+
+application.properties

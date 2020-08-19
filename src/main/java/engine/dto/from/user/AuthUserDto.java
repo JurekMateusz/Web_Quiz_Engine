@@ -13,7 +13,7 @@ import javax.validation.constraints.Size;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class RegisterUserDto {
+public class AuthUserDto {
   @NotNull
   @Pattern(regexp = ".+@.+\\..+", message = "Invalid email format")
   private String email;

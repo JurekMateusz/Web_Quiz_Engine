@@ -1,6 +1,7 @@
 package engine.controllers.user;
 
-import engine.dto.from.user.RegisterUserDto;
+import engine.dto.from.user.AuthUserDto;
+import engine.dto.to.auth.AuthenticationResponse;
 import engine.services.user.UserServiceImpl;
 import engine.util.user.UserMapping;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +24,12 @@ public class UserController {
 
   @PostMapping(UserMapping.REGISTER_USER)
   @ResponseStatus(code = HttpStatus.CREATED)
-  public void registerUser(@RequestBody @Valid RegisterUserDto userDto) {
+  public void registerUser(@RequestBody @Valid AuthUserDto userDto) {
     userService.register(userDto);
+  }
+
+  @PostMapping(UserMapping.LOGIN_USER)
+  public AuthenticationResponse login(@RequestBody AuthUserDto userDto) {
+    return userService.login(userDto);
   }
 }

@@ -2,7 +2,7 @@ package engine.services.complete;
 
 import engine.dto.converter.Converter;
 import engine.dto.converter.ConverterFactory;
-import engine.dto.to.CompleteQuizInfoDto;
+import engine.dto.to.quiz.CompleteQuizInfoDto;
 import engine.entity.complete.CompleteQuizInfo;
 import engine.entity.user.User;
 import engine.repository.quiz.CompleteQuizInfoRepository;

@@ -1,7 +1,7 @@
 package engine.dto.converter.complete;
 
 import engine.dto.converter.Converter;
-import engine.dto.to.CompleteQuizInfoDto;
+import engine.dto.to.quiz.CompleteQuizInfoDto;
 import engine.entity.complete.CompleteQuizInfo;
 
 public class CompleteQuizInfoToDtoImpl implements Converter<CompleteQuizInfo, CompleteQuizInfoDto> {

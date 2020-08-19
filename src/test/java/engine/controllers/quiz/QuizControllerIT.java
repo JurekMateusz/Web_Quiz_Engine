@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import engine.controllers.AbstractTest;
 import engine.dto.from.quiz.QuizFromUserDto;
-import engine.dto.to.QuizToUserDto;
+import engine.dto.to.quiz.QuizToUserDto;
 import engine.util.quizzes.QuizzesMapping;
 import engine.util.user.UserMapping;
 import org.json.JSONArray;

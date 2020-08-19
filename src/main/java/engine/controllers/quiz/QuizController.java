@@ -2,8 +2,8 @@ package engine.controllers.quiz;
 
 import engine.dto.from.quiz.QuizFromUserDto;
 import engine.dto.from.quiz.UserAnswer;
-import engine.dto.to.CompleteQuizInfoDto;
-import engine.dto.to.QuizToUserDto;
+import engine.dto.to.quiz.CompleteQuizInfoDto;
+import engine.dto.to.quiz.QuizToUserDto;
 import engine.dto.to.feedback.AnswerFeedback;
 import engine.services.complete.CompleteQuizInfoService;
 import engine.services.quiz.QuizService;

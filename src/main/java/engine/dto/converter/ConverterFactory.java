@@ -6,7 +6,7 @@ import engine.dto.converter.quizdto.QuizFromUserDtoToQuizEntityImpl;
 
 import engine.dto.converter.user.UserDtoToUserConverter;
 import engine.dto.from.quiz.QuizFromUserDto;
-import engine.dto.from.user.RegisterUserDto;
+import engine.dto.from.user.AuthUserDto;
 import engine.entity.complete.CompleteQuizInfo;
 import engine.entity.quiz.Quiz;
 
@@ -18,7 +18,7 @@ public class ConverterFactory {
       return new QuizEntityToQuizDtoImpl();
     } else if (myClass == CompleteQuizInfo.class) {
       return new CompleteQuizInfoToDtoImpl();
-    } else if (myClass == RegisterUserDto.class) {
+    } else if (myClass == AuthUserDto.class) {
       return new UserDtoToUserConverter();
     } else {
       throw new RuntimeException("Converter dont exist: " + myClass.getName());

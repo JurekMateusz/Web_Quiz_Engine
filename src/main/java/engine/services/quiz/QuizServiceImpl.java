@@ -4,7 +4,7 @@ import engine.dto.converter.Converter;
 import engine.dto.converter.ConverterFactory;
 import engine.dto.from.quiz.QuizFromUserDto;
 import engine.dto.from.quiz.UserAnswer;
-import engine.dto.to.QuizToUserDto;
+import engine.dto.to.quiz.QuizToUserDto;
 import engine.dto.to.feedback.AnswerFeedback;
 import engine.entity.quiz.Quiz;
 import engine.entity.quiz.QuizAnswers;

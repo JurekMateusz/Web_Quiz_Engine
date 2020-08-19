@@ -1,4 +1,4 @@
-package engine.dto.to;
+package engine.dto.to.quiz;
 
 import lombok.*;
 

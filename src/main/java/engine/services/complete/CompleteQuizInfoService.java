@@ -1,6 +1,6 @@
 package engine.services.complete;
 
-import engine.dto.to.CompleteQuizInfoDto;
+import engine.dto.to.quiz.CompleteQuizInfoDto;
 import org.springframework.data.domain.Page;
 
 public interface CompleteQuizInfoService {
