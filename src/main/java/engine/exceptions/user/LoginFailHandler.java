@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.util.HashMap;
 
 @RestControllerAdvice
-public class LoginFailException {
+public class LoginFailHandler {
   private static final String VALIDATION_MESSAGE = "Credentials incorrect";
 
   @ExceptionHandler(BadCredentialsException.class)

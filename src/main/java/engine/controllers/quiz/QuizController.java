@@ -1,10 +1,11 @@
 package engine.controllers.quiz;
 
-import engine.dto.from.quiz.QuizFromUserDto;
-import engine.dto.from.quiz.UserAnswer;
+import engine.dto.from.quiz.answer.UserAnswer;
+import engine.dto.from.quiz.add.AddQuizDto;
+import engine.dto.to.feedback.FeedbackAnswerForSingleQuiz;
 import engine.dto.to.quiz.CompleteQuizInfoDto;
-import engine.dto.to.quiz.QuizToUserDto;
-import engine.dto.to.feedback.AnswerFeedback;
+import engine.dto.to.quiz.FullQuizToUserDto;
+import engine.entity.quiz.Quiz;
 import engine.services.complete.CompleteQuizInfoService;
 import engine.services.quiz.QuizService;
 import engine.util.Parameters;
@@ -28,30 +29,20 @@ public class QuizController {
     this.quizInfoService = completeQuizInfoService;
   }
 
-  @PostMapping(QuizzesMapping.CHECK_ANSWER)
-  public AnswerFeedback checkAnswer(@PathVariable long id, @RequestBody UserAnswer userAnswer) {
-    AnswerFeedback answerFeedback = quizService.checkAnswerById(id, userAnswer);
-    if (answerFeedback.isSuccess()) {
-      quizInfoService.addIdQuizToUserCompletedQuizzes(id);
-    }
-    return answerFeedback;
-  }
-
   @PostMapping(path = QuizzesMapping.BASIC_QUIZZES_PATH, consumes = Parameters.JSON)
   @ResponseStatus(HttpStatus.CREATED)
-  public QuizToUserDto addQuiz(@RequestBody @Valid QuizFromUserDto quizFromUser) {
-    return quizService.addQuiz(quizFromUser);
+  public void addQuizzes(@RequestBody @Valid AddQuizDto quizFromUser) {
+    quizService.addQuizzes(quizFromUser);
+  }
+
+  @GetMapping(QuizzesMapping.BASIC_QUIZZES_PATH)
+  public Page<Quiz> getAllQuizzes(Pageable pageable) {
+    return quizService.getAllQuizzes(pageable);
   }
 
   @GetMapping(QuizzesMapping.QUIZ_BY_ID)
-  public QuizToUserDto getQuiz(@PathVariable long id) {
+  public FullQuizToUserDto getFullQuiz(@PathVariable long id) {
     return quizService.getQuizById(id);
-  }
-
-
-  @GetMapping(QuizzesMapping.BASIC_QUIZZES_PATH)
-  public Page<QuizToUserDto> getAllQuizzes(Pageable pageable) {
-    return quizService.getAllQuizzes(pageable);
   }
 
   @GetMapping(QuizzesMapping.ALL_COMPLETED_QUIZZES)
@@ -60,6 +51,18 @@ public class QuizController {
       @RequestParam(required = false, defaultValue = "10") int size,
       @RequestParam(required = false, defaultValue = "completedAt") String sortBy) {
     return quizInfoService.getAll(page, size, sortBy);
+  }
+
+  @PostMapping(QuizzesMapping.CHECK_ANSWER_QUESTION)
+  public FeedbackAnswerForSingleQuiz checkAnswerSingleQuiz(
+      @PathVariable long id, @RequestBody UserAnswer userAnswer) {
+    FeedbackAnswerForSingleQuiz feedbackAnswerForSingleQuiz =
+        quizService.checkAnswerSingleQuizById(id, userAnswer);
+    //TODO
+//    if (feedbackAnswerForSingleQuiz.isSuccess()) {
+//      quizInfoService.addIdQuizToUserCompletedQuizzes(id);
+//    }
+    return feedbackAnswerForSingleQuiz;
   }
 
   @DeleteMapping(QuizzesMapping.DELETE_QUIZ)

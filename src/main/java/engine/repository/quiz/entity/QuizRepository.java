@@ -1,4 +1,4 @@
-package engine.repository.quiz;
+package engine.repository.quiz.entity;
 
 import engine.entity.quiz.Quiz;
 import org.springframework.data.repository.PagingAndSortingRepository;

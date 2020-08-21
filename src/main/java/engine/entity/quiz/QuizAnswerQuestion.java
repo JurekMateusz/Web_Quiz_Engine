@@ -11,15 +11,18 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class QuizOptions implements Serializable {
+public class QuizAnswerQuestion implements Serializable {
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
   @Column(name = "option_id")
   private long id;
 
-  @ManyToOne
-  @JoinColumn(name = "quiz_id")
-  private Quiz quiz;
+  @ManyToOne(optional = false)
+  @JoinColumn(name = "quiz_question_id")
+  private QuizQuestion quizQuestion;
 
-  private String content;
+  private String answer;
+
+  @Enumerated(value = EnumType.ORDINAL)
+  private AnswerStatus status;
 }

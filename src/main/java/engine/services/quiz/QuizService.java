@@ -1,20 +1,24 @@
 package engine.services.quiz;
 
-import engine.dto.from.quiz.QuizFromUserDto;
-import engine.dto.from.quiz.UserAnswer;
-import engine.dto.to.quiz.QuizToUserDto;
-import engine.dto.to.feedback.AnswerFeedback;
+import engine.dto.from.quiz.answer.UserAnswer;
+import engine.dto.from.quiz.add.AddQuizDto;
+import engine.dto.to.feedback.FeedbackAnswerForSingleQuiz;
+import engine.dto.to.quiz.FullQuizToUserDto;
+import engine.entity.quiz.Quiz;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface QuizService {
-  AnswerFeedback checkAnswerById(long id, UserAnswer userAnswer);
+  FeedbackAnswerForSingleQuiz checkAnswerSingleQuizById(long id, UserAnswer userAnswer);
 
-  QuizToUserDto addQuiz(QuizFromUserDto quizFromUserDto);
+  void addQuizzes(AddQuizDto addQuizDto);
 
-  QuizToUserDto getQuizById(long id);
+  FullQuizToUserDto getQuizById(long id);
 
-  Page<QuizToUserDto> getAllQuizzes(Pageable pageable);
+  Page<Quiz> getAllQuizzes(Pageable pageable);
 
   void delete(long id);
+
+  //  List<QuizQuestion> searchAllSingleQuizzes();
+  //  List<QuizAnswerQuestion> searchAllQuizAnswerQuestion();
 }

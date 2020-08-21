@@ -11,15 +11,15 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class QuizAnswers implements Serializable {
+public class QuizQuestion implements Serializable {
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
-  @Column(name = "answer_id")
+  @Column(name = "question_id")
   private long id;
 
-  @ManyToOne
-  @JoinColumn(name = "quiz_id")
+  @ManyToOne(optional = false)
+  @JoinColumn(name = "quiz_id",nullable = true)
   private Quiz quiz;
 
-  private int answer;
+  private String question;
 }

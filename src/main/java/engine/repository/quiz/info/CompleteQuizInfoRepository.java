@@ -1,4 +1,4 @@
-package engine.repository.quiz;
+package engine.repository.quiz.info;
 
 import engine.entity.complete.CompleteQuizInfo;
 import org.springframework.data.domain.Page;

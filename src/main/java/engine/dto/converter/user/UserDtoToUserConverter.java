@@ -1,12 +1,22 @@
 package engine.dto.converter.user;
 
-import engine.dto.converter.Converter;
+import com.sdp.common.assemblers.Assembler;
+import com.sdp.common.assemblers.AssemblerFactory;
+import com.sdp.common.assemblers.StandardAssemblerBuilder;
 import engine.dto.from.user.AuthUserDto;
 import engine.entity.user.User;
 
-public class UserDtoToUserConverter implements Converter<AuthUserDto, User> {
+import javax.validation.constraints.NotNull;
+
+public class UserDtoToUserConverter extends AssemblerFactory<AuthUserDto, User> {
+
   @Override
-  public User convert(AuthUserDto userDto) {
-    return User.builder().email(userDto.getEmail()).password(userDto.getPassword()).build();
+  protected @NotNull Assembler<AuthUserDto, User> createAssemblerFactory() {
+    return StandardAssemblerBuilder.create(AuthUserDto.class, User.class)
+        .from(AuthUserDto::getEmail)
+        .to(User::setEmail)
+        .from(AuthUserDto::getPassword)
+        .to(User::setPassword)
+        .build();
   }
 }

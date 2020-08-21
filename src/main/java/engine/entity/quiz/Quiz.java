@@ -1,16 +1,16 @@
 package engine.entity.quiz;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.List;
 
 @Getter
 @Setter
-@RequiredArgsConstructor
 @NoArgsConstructor
-@AllArgsConstructor
 @Entity
 @Table(name = "quiz")
 public class Quiz implements Serializable {
@@ -19,21 +19,7 @@ public class Quiz implements Serializable {
   @Column(name = "quiz_id")
   private long id;
 
-  @NonNull private String title;
-
-  @NonNull private String question;
-
-  @NonNull
-  @OneToMany(
-      mappedBy = "quiz",
-      cascade = {CascadeType.REMOVE, CascadeType.PERSIST})
-  private List<QuizOptions> options;
-
-  @NonNull
-  @OneToMany(
-      mappedBy = "quiz",
-      cascade = {CascadeType.REMOVE, CascadeType.PERSIST})
-  private List<QuizAnswers> answer;
+  private String title;
 
   @Column(name = "user_id", nullable = true)
   private long userId;

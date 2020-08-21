@@ -1,11 +1,11 @@
 package engine.services.complete;
 
-import engine.dto.converter.Converter;
-import engine.dto.converter.ConverterFactory;
+import com.sdp.common.assemblers.AssemblerFactory;
+import engine.dto.converter.AssemblerWebQuizFactory;
 import engine.dto.to.quiz.CompleteQuizInfoDto;
 import engine.entity.complete.CompleteQuizInfo;
 import engine.entity.user.User;
-import engine.repository.quiz.CompleteQuizInfoRepository;
+import engine.repository.quiz.info.CompleteQuizInfoRepository;
 import engine.services.user.UserServiceImpl;
 import engine.services.utils.AuthenticatedUser;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,11 +13,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 
 @Service
+@Component
 public class CompleteQuizInfoServiceImpl implements CompleteQuizInfoService {
   private final UserServiceImpl userService;
   private final CompleteQuizInfoRepository repository;
@@ -55,9 +57,9 @@ public class CompleteQuizInfoServiceImpl implements CompleteQuizInfoService {
   private Page<CompleteQuizInfoDto> convertToDto(Page<CompleteQuizInfo> page) {
     return page.map(
         completeQuizInfo -> {
-          Converter<CompleteQuizInfo, CompleteQuizInfoDto> converter =
-              ConverterFactory.getConverter(CompleteQuizInfo.class);
-          return converter.convert(completeQuizInfo);
+          AssemblerFactory<CompleteQuizInfo, CompleteQuizInfoDto> converter =
+              AssemblerWebQuizFactory.getConverter(CompleteQuizInfo.class);
+          return converter.assemble(completeQuizInfo);
         });
   }
 }
