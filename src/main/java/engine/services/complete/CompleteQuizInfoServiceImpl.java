@@ -17,6 +17,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @Component
@@ -47,11 +48,17 @@ public class CompleteQuizInfoServiceImpl implements CompleteQuizInfoService {
   }
 
   @Override
-  public Page<CompleteQuizInfoDto> getAll(int pageNo, int pageSize, String sortBy) {
+  public Page<CompleteQuizInfoDto> getPage(int pageNo, int pageSize, String sortBy) {
     long id = AuthenticatedUser.getId();
     Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(sortBy).descending());
     Page<CompleteQuizInfo> page = repository.findAllByUserId(id, pageable);
     return convertToDto(page);
+  }
+
+  @Override
+  public List<CompleteQuizInfo> getAllUserCompletedQuizzes() {
+    long id = AuthenticatedUser.getId();
+    return repository.findAllByUser_Id(id);
   }
 
   private Page<CompleteQuizInfoDto> convertToDto(Page<CompleteQuizInfo> page) {

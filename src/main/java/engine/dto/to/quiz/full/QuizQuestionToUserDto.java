@@ -1,4 +1,4 @@
-package engine.dto.to.quiz;
+package engine.dto.to.quiz.full;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

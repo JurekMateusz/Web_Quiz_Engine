@@ -3,8 +3,8 @@ package engine.services.quiz;
 import engine.dto.from.quiz.answer.UserAnswer;
 import engine.dto.from.quiz.add.AddQuizDto;
 import engine.dto.to.feedback.FeedbackAnswerForSingleQuiz;
-import engine.dto.to.quiz.FullQuizToUserDto;
-import engine.entity.quiz.Quiz;
+import engine.dto.to.quiz.QuizHeaderDto;
+import engine.dto.to.quiz.full.FullQuizToUserDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -15,7 +15,7 @@ public interface QuizService {
 
   FullQuizToUserDto getQuizById(long id);
 
-  Page<Quiz> getAllQuizzes(Pageable pageable);
+  Page<QuizHeaderDto> getAllHeadersQuizzes(Pageable pageable);
 
   void delete(long id);
 

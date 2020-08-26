@@ -4,9 +4,11 @@ import com.google.common.collect.ImmutableMap;
 import com.sdp.common.assemblers.AssemblerFactory;
 import engine.dto.converter.complete.CompleteQuizInfoAssemblerFactoryImpl;
 import engine.dto.converter.quizdto.AddQuizDtoAssemblerFactory;
+import engine.dto.converter.quizheader.QuizHeaderDtoAssemblerFactory;
 import engine.dto.converter.user.UserDtoToUserConverter;
 import engine.dto.from.quiz.add.AddQuizDto;
 import engine.dto.from.user.AuthUserDto;
+import engine.dto.to.quiz.QuizHeaderDto;
 import engine.entity.complete.CompleteQuizInfo;
 
 public class AssemblerWebQuizFactory {
@@ -18,6 +20,7 @@ public class AssemblerWebQuizFactory {
             .put(AddQuizDto.class, new AddQuizDtoAssemblerFactory())
             .put(CompleteQuizInfo.class, new CompleteQuizInfoAssemblerFactoryImpl())
             .put(AuthUserDto.class, new UserDtoToUserConverter())
+            .put(QuizHeaderDto.class, new QuizHeaderDtoAssemblerFactory())
             .build();
   }
 

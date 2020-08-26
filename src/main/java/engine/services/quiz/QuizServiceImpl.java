@@ -1,13 +1,16 @@
 package engine.services.quiz;
 
+import com.sdp.common.assemblers.AssemblerFactory;
 import engine.dto.converter.AssemblerWebQuizFactory;
 import engine.dto.converter.quizdto.AddQuizDtoAssemblerFactory;
 import engine.dto.from.quiz.add.AddQuizDto;
 import engine.dto.from.quiz.answer.UserAnswer;
 import engine.dto.to.feedback.FeedbackAnswerForSingleQuiz;
-import engine.dto.to.quiz.FullQuizToUserDto;
-import engine.dto.to.quiz.QuizAnswerQuestionToUserDto;
-import engine.dto.to.quiz.QuizQuestionToUserDto;
+import engine.dto.to.quiz.QuizHeaderDto;
+import engine.dto.to.quiz.full.FullQuizToUserDto;
+import engine.dto.to.quiz.full.QuizAnswerQuestionToUserDto;
+import engine.dto.to.quiz.full.QuizQuestionToUserDto;
+import engine.entity.complete.CompleteQuizInfo;
 import engine.entity.quiz.Quiz;
 import engine.entity.quiz.QuizAnswerQuestion;
 import engine.entity.quiz.QuizQuestion;
@@ -17,6 +20,7 @@ import engine.exceptions.quiz.QuizQuestionNotFoundException;
 import engine.repository.quiz.entity.QuizAnswerQuestionRepository;
 import engine.repository.quiz.entity.QuizQuestionRepository;
 import engine.repository.quiz.entity.QuizRepository;
+import engine.services.complete.CompleteQuizInfoService;
 import engine.services.utils.AuthenticatedUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -36,15 +40,17 @@ public class QuizServiceImpl implements QuizService {
     private final QuizRepository quizRepo;
     private final QuizAnswerQuestionRepository quizAnswerQuestionRepo;
     private final QuizQuestionRepository quizQuestionRepo;
+    private final CompleteQuizInfoService completeQuizInfoService;
 
     @Autowired
     public QuizServiceImpl(
             QuizRepository quizRepo,
             QuizAnswerQuestionRepository quizAnswerQuestionRepo,
-            QuizQuestionRepository quizQuestionRepo) {
+            QuizQuestionRepository quizQuestionRepo, CompleteQuizInfoService completeQuizInfoService) {
         this.quizRepo = quizRepo;
         this.quizAnswerQuestionRepo = quizAnswerQuestionRepo;
         this.quizQuestionRepo = quizQuestionRepo;
+        this.completeQuizInfoService = completeQuizInfoService;
     }
 
     @Override
@@ -84,6 +90,7 @@ public class QuizServiceImpl implements QuizService {
         List<QuizQuestion> quizQuestions = convertedHashMap.get(QuizQuestion.class);
         Quiz quiz = quizQuestions.get(0).getQuiz();
         quiz.setUserId(userId);
+        quiz.setNumbersOfQuestions(quizQuestions.size());
         quizRepo.save(quiz);
 
         quizQuestions.forEach(quizQuestionRepo::save);
@@ -140,8 +147,25 @@ public class QuizServiceImpl implements QuizService {
     }
 
     @Override
-    public Page<Quiz> getAllQuizzes(Pageable pageable) {
-        return quizRepo.findAll(pageable);
+    public Page<QuizHeaderDto> getAllHeadersQuizzes(Pageable pageable) {
+        Page<Quiz> all = quizRepo.findAll(pageable);
+        List<CompleteQuizInfo> allCompleted = completeQuizInfoService.getAllUserCompletedQuizzes();
+
+       return all.map(quiz -> {
+            QuizHeaderDto converted = convertQuiz(quiz);
+            if(isQuizCompleted(quiz,allCompleted)){
+               converted.setMade(true);
+            }
+            return converted;
+        });
+    }
+    private QuizHeaderDto convertQuiz(Quiz quiz){
+        AssemblerFactory<Quiz, QuizHeaderDto> converter = AssemblerWebQuizFactory.getConverter(QuizHeaderDto.class);
+        return converter.assemble(quiz);
+    }
+    private boolean isQuizCompleted(Quiz quiz, List<CompleteQuizInfo> completed){
+       return  completed.stream()
+               .anyMatch(completeQuizInfo -> completeQuizInfo.getQuizId() == quiz.getId());
     }
 
     @Override

@@ -2,7 +2,7 @@ package engine.controllers.quiz;
 
 import engine.controllers.AbstractTest;
 import engine.dto.from.quiz.add.AddQuizDto;
-import engine.dto.to.quiz.FullQuizToUserDto;
+import engine.dto.to.quiz.full.FullQuizToUserDto;
 import engine.util.quizzes.QuizzesMapping;
 import engine.util.user.UserMapping;
 import org.json.JSONArray;

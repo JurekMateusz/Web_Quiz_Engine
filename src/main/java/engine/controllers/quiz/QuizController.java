@@ -1,10 +1,11 @@
 package engine.controllers.quiz;
 
-import engine.dto.from.quiz.answer.UserAnswer;
 import engine.dto.from.quiz.add.AddQuizDto;
+import engine.dto.from.quiz.answer.UserAnswer;
 import engine.dto.to.feedback.FeedbackAnswerForSingleQuiz;
 import engine.dto.to.quiz.CompleteQuizInfoDto;
-import engine.dto.to.quiz.FullQuizToUserDto;
+import engine.dto.to.quiz.QuizHeaderDto;
+import engine.dto.to.quiz.full.FullQuizToUserDto;
 import engine.entity.quiz.Quiz;
 import engine.services.complete.CompleteQuizInfoService;
 import engine.services.quiz.QuizService;
@@ -36,8 +37,8 @@ public class QuizController {
   }
 
   @GetMapping(QuizzesMapping.BASIC_QUIZZES_PATH)
-  public Page<Quiz> getAllQuizzes(Pageable pageable) {
-    return quizService.getAllQuizzes(pageable);
+  public Page<QuizHeaderDto> getAllQuizzes(Pageable pageable) {
+    return quizService.getAllHeadersQuizzes(pageable);
   }
 
   @GetMapping(QuizzesMapping.QUIZ_BY_ID)
@@ -50,7 +51,7 @@ public class QuizController {
       @RequestParam(required = false, defaultValue = "0") int page,
       @RequestParam(required = false, defaultValue = "10") int size,
       @RequestParam(required = false, defaultValue = "completedAt") String sortBy) {
-    return quizInfoService.getAll(page, size, sortBy);
+    return quizInfoService.getPage(page, size, sortBy);
   }
 
   @PostMapping(QuizzesMapping.CHECK_ANSWER_QUESTION)
@@ -58,10 +59,10 @@ public class QuizController {
       @PathVariable long id, @RequestBody UserAnswer userAnswer) {
     FeedbackAnswerForSingleQuiz feedbackAnswerForSingleQuiz =
         quizService.checkAnswerSingleQuizById(id, userAnswer);
-    //TODO
-//    if (feedbackAnswerForSingleQuiz.isSuccess()) {
-//      quizInfoService.addIdQuizToUserCompletedQuizzes(id);
-//    }
+    // TODO
+    //    if (feedbackAnswerForSingleQuiz.isSuccess()) {
+    //      quizInfoService.addIdQuizToUserCompletedQuizzes(id);
+    //    }
     return feedbackAnswerForSingleQuiz;
   }
 

@@ -20,35 +20,36 @@ import static org.springframework.http.HttpStatus.OK;
 
 @RestController
 public class UserController {
-    private final UserServiceImpl userService;
-    private final RefreshTokenService refreshTokenService;
+  private final UserServiceImpl userService;
+  private final RefreshTokenService refreshTokenService;
 
-    @Autowired
-    public UserController(UserServiceImpl userService, RefreshTokenService refreshTokenService) {
-        this.userService = userService;
-        this.refreshTokenService = refreshTokenService;
-    }
+  @Autowired
+  public UserController(UserServiceImpl userService, RefreshTokenService refreshTokenService) {
+    this.userService = userService;
+    this.refreshTokenService = refreshTokenService;
+  }
 
-    @PostMapping(UserMapping.REGISTER_USER)
-    @ResponseStatus(code = HttpStatus.CREATED)
-    public void registerUser(@RequestBody @Valid AuthUserDto userDto) {
-        userService.register(userDto);
-    }
+  @PostMapping(UserMapping.REGISTER_USER)
+  @ResponseStatus(code = HttpStatus.CREATED)
+  public void registerUser(@RequestBody @Valid AuthUserDto userDto) {
+    userService.register(userDto);
+  }
 
-    @PostMapping(UserMapping.LOGIN_USER)
-    public AuthenticationResponse login(@RequestBody AuthUserDto userDto) {
-        return userService.login(userDto);
-    }
+  @PostMapping(UserMapping.LOGIN_USER)
+  public AuthenticationResponse login(@RequestBody AuthUserDto userDto) {
+    return userService.login(userDto);
+  }
 
-    @PostMapping(UserMapping.REFRESH_TOKEN)
-    public AuthenticationResponse refreshToken(@Valid @RequestBody RefreshTokenRequest refreshTokenRequest) {
-        return userService.refreshToken(refreshTokenRequest);
-    }
+  @PostMapping(UserMapping.REFRESH_TOKEN)
+  public AuthenticationResponse refreshToken(
+      @Valid @RequestBody RefreshTokenRequest refreshTokenRequest) {
+    return userService.refreshToken(refreshTokenRequest);
+  }
 
-    @PostMapping(UserMapping.LOGOUT_USER)
-    public ResponseEntity<String> logout(@Valid @RequestBody RefreshTokenRequest refreshTokenRequest) {
-        refreshTokenService.deleteRefreshToken(refreshTokenRequest.getRefreshToken());
-        return ResponseEntity.status(OK).body(UserMapping.LOGOUT_INFO);
-    }
-
+  @PostMapping(UserMapping.LOGOUT_USER)
+  public ResponseEntity<String> logout(
+      @Valid @RequestBody RefreshTokenRequest refreshTokenRequest) {
+    refreshTokenService.deleteRefreshToken(refreshTokenRequest.getRefreshToken());
+    return ResponseEntity.status(OK).body(UserMapping.LOGOUT_INFO);
+  }
 }

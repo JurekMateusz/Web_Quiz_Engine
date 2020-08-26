@@ -1,6 +1,5 @@
 package engine.entity.quiz;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -14,13 +13,14 @@ import java.io.Serializable;
 @Entity
 @Table(name = "quiz")
 public class Quiz implements Serializable {
-  @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
-  @Column(name = "quiz_id")
-  private long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "quiz_id")
+    private long id;
 
-  private String title;
+    private String title;
+    private int numbersOfQuestions;
 
-  @Column(name = "user_id", nullable = true)
-  private long userId;
+    @Column(name = "user_id", nullable = true)
+    private long userId;
 }
