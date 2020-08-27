@@ -23,83 +23,83 @@ import static java.util.Date.from;
 
 @Service
 public class JwtProvider {
-    private KeyStore keyStore;
+  private KeyStore keyStore;
 
-    @Value("${jwt.expiration.time}")
-    private Long jwtExpirationInMillis;
+  @Value("${jwt.expiration.time}")
+  private Long jwtExpirationInMillis;
 
-    @Value("${jks-name}")
-    private String jksName;
+  @Value("${jks-name}")
+  private String jksName;
 
-    @Value("${jwt-alians}")
-    private String alians;
+  @Value("${jwt-alians}")
+  private String alians;
 
-    @Value("${jwt-key}")
-    private String key;
+  @Value("${jwt-key}")
+  private String key;
 
-    @PostConstruct
-    public void init() {
-        try {
-            keyStore = KeyStore.getInstance("JKS");
-            InputStream resourceAsStream = getClass().getResourceAsStream(jksName);
-            keyStore.load(resourceAsStream, key.toCharArray());
-        } catch (KeyStoreException | CertificateException | NoSuchAlgorithmException | IOException e) {
-            throw new WebQuizException("Exception occurred while loading keystore", e);
-        }
+  @PostConstruct
+  public void init() {
+    try {
+      keyStore = KeyStore.getInstance("JKS");
+      InputStream resourceAsStream = getClass().getResourceAsStream(jksName);
+      keyStore.load(resourceAsStream, key.toCharArray());
+    } catch (KeyStoreException | CertificateException | NoSuchAlgorithmException | IOException e) {
+      throw new WebQuizException("Exception occurred while loading keystore", e);
     }
+  }
 
-    public String generateToken(Authentication authentication) {
-        UserPrincipal principal = (UserPrincipal) authentication.getPrincipal();
-        return Jwts.builder()
-                .setSubject(principal.getUsername())
-                .setIssuedAt(from(Instant.now()))
-                .signWith(getPrivateKey())
-                .setExpiration(Date.from(Instant.now().plusMillis(jwtExpirationInMillis)))
-                .compact();
+  public String generateToken(Authentication authentication) {
+    UserPrincipal principal = (UserPrincipal) authentication.getPrincipal();
+    return Jwts.builder()
+        .setSubject(principal.getUsername())
+        .setIssuedAt(from(Instant.now()))
+        .signWith(getPrivateKey())
+        .setExpiration(Date.from(Instant.now().plusMillis(jwtExpirationInMillis)))
+        .compact();
+  }
+
+  public String generateTokenWithUserName(String username) {
+    return Jwts.builder()
+        .setSubject(username)
+        .setIssuedAt(from(Instant.now()))
+        .signWith(getPrivateKey())
+        .setExpiration(Date.from(Instant.now().plusMillis(jwtExpirationInMillis)))
+        .compact();
+  }
+
+  private PrivateKey getPrivateKey() {
+    try {
+      return (PrivateKey) keyStore.getKey(alians, key.toCharArray());
+    } catch (KeyStoreException | NoSuchAlgorithmException | UnrecoverableKeyException e) {
+      throw new WebQuizException("Exception occured while retrieving public key from keystore", e);
     }
+  }
 
-    public String generateTokenWithUserName(String username) {
-        return Jwts.builder()
-                .setSubject(username)
-                .setIssuedAt(from(Instant.now()))
-                .signWith(getPrivateKey())
-                .setExpiration(Date.from(Instant.now().plusMillis(jwtExpirationInMillis)))
-                .compact();
+  public boolean isTokenValid(String jwt) {
+    try {
+      parser().setSigningKey(getPublicKey()).parseClaimsJws(jwt);
+    } catch (ExpiredJwtException | SignatureException | IllegalArgumentException ex) {
+      return false;
     }
+    return true;
+  }
 
-    private PrivateKey getPrivateKey() {
-        try {
-            return (PrivateKey) keyStore.getKey(alians, key.toCharArray());
-        } catch (KeyStoreException | NoSuchAlgorithmException | UnrecoverableKeyException e) {
-            throw new WebQuizException("Exception occured while retrieving public key from keystore", e);
-        }
+  private PublicKey getPublicKey() {
+    try {
+      return keyStore.getCertificate(alians).getPublicKey();
+    } catch (KeyStoreException e) {
+      throw new WebQuizException(
+          "Exception occured while " + "retrieving public key from keystore", e);
     }
+  }
 
-    public boolean isTokenValid(String jwt) {
-        try {
-            parser().setSigningKey(getPublicKey()).parseClaimsJws(jwt);
-        } catch (ExpiredJwtException | SignatureException | IllegalArgumentException ex) {
-            return false;
-        }
-        return true;
-    }
+  public String getUsernameFromJwt(String token) {
+    Claims claims = parser().setSigningKey(getPublicKey()).parseClaimsJws(token).getBody();
 
-    private PublicKey getPublicKey() {
-        try {
-            return keyStore.getCertificate(alians).getPublicKey();
-        } catch (KeyStoreException e) {
-            throw new WebQuizException(
-                    "Exception occured while " + "retrieving public key from keystore", e);
-        }
-    }
+    return claims.getSubject();
+  }
 
-    public String getUsernameFromJwt(String token) {
-        Claims claims = parser().setSigningKey(getPublicKey()).parseClaimsJws(token).getBody();
-
-        return claims.getSubject();
-    }
-
-    public Long getJwtExpirationInMillis() {
-        return jwtExpirationInMillis;
-    }
+  public Long getJwtExpirationInMillis() {
+    return jwtExpirationInMillis;
+  }
 }

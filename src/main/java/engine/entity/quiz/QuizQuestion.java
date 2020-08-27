@@ -18,7 +18,7 @@ public class QuizQuestion implements Serializable {
   private long id;
 
   @ManyToOne(optional = false)
-  @JoinColumn(name = "quiz_id",nullable = true)
+  @JoinColumn(name = "quiz_id", nullable = true)
   private Quiz quiz;
 
   private String question;

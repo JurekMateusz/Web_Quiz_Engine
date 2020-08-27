@@ -12,5 +12,5 @@ import java.util.List;
 public class QuizQuestionToUserDto {
   private long id;
   private String question;
-  private List<QuizAnswerQuestionToUserDto> quizAnswerQuestions;
+  private List<QuizAnswerQuestionDto> quizAnswerQuestions;
 }

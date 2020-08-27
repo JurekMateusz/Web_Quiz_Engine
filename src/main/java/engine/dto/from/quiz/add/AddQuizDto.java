@@ -16,5 +16,4 @@ public final class AddQuizDto {
   private String title;
 
   @NotNull private List<AddQuizQuestionDto> quizQuestions;
-
 }

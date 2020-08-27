@@ -13,5 +13,5 @@ public interface CompleteQuizInfoRepository
     extends PagingAndSortingRepository<CompleteQuizInfo, Long> {
   Page<CompleteQuizInfo> findAllByUserId(long id, Pageable paging);
 
-  List<CompleteQuizInfo> findAllByUser_Id(long id);
+  List<CompleteQuizInfo> findAllByUserId(long id);
 }

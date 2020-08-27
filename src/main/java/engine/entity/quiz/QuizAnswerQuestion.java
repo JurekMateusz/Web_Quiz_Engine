@@ -14,7 +14,7 @@ import java.io.Serializable;
 public class QuizAnswerQuestion implements Serializable {
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
-  @Column(name = "option_id")
+  @Column(name = "answer_id")
   private long id;
 
   @ManyToOne(optional = false)

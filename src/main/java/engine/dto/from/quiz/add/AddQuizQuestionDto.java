@@ -1,6 +1,5 @@
 package engine.dto.from.quiz.add;
 
-import engine.dto.from.quiz.add.AddQuizAnswerQuestionDto;
 import lombok.*;
 
 import javax.validation.constraints.NotEmpty;
@@ -13,9 +12,9 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AddQuizQuestionDto {
-    @NotEmpty(message = "Quiz question field can't be empty")
-    private String question;
+  @NotEmpty(message = "Quiz question field can't be empty")
+  private String question;
 
-    @Size(min = 2, message = "Min size of answers to chose is 2")
-    private List<AddQuizAnswerQuestionDto> quizAnswerQuestions;
+  @Size(min = 2, message = "Min size of answers to chose is 2")
+  private List<AddQuizAnswerQuestionDto> quizAnswerQuestions;
 }

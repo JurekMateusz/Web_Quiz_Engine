@@ -2,14 +2,18 @@ package engine.dto.converter;
 
 import com.google.common.collect.ImmutableMap;
 import com.sdp.common.assemblers.AssemblerFactory;
-import engine.dto.converter.complete.CompleteQuizInfoAssemblerFactoryImpl;
-import engine.dto.converter.quizdto.AddQuizDtoAssemblerFactory;
-import engine.dto.converter.quizheader.QuizHeaderDtoAssemblerFactory;
+import engine.dto.converter.answerdto.UserAnswerDtoAssemblerFactory;
+import engine.dto.converter.quiz.completeinfo.CompleteQuizInfoAssemblerFactory;
+import engine.dto.converter.quiz.header.QuizHeaderDtoAssemblerFactory;
+import engine.dto.converter.quiz.question.QuizQuestionAssemblerFactory;
+import engine.dto.converter.quiz.quizdto.AddQuizDtoAssemblerFactory;
 import engine.dto.converter.user.UserDtoToUserConverter;
 import engine.dto.from.quiz.add.AddQuizDto;
+import engine.dto.from.quiz.answer.UserAnswerDto;
 import engine.dto.from.user.AuthUserDto;
-import engine.dto.to.quiz.QuizHeaderDto;
-import engine.entity.complete.CompleteQuizInfo;
+import engine.dto.to.feedback.FeedbackForSolvedQuiz;
+import engine.entity.quiz.Quiz;
+import engine.entity.quiz.QuizQuestion;
 
 public class AssemblerWebQuizFactory {
   private static final ImmutableMap<Class<?>, AssemblerFactory> map;
@@ -18,9 +22,11 @@ public class AssemblerWebQuizFactory {
     map =
         ImmutableMap.<Class<?>, AssemblerFactory>builder()
             .put(AddQuizDto.class, new AddQuizDtoAssemblerFactory())
-            .put(CompleteQuizInfo.class, new CompleteQuizInfoAssemblerFactoryImpl())
             .put(AuthUserDto.class, new UserDtoToUserConverter())
-            .put(QuizHeaderDto.class, new QuizHeaderDtoAssemblerFactory())
+            .put(Quiz.class, new QuizHeaderDtoAssemblerFactory())
+            .put(UserAnswerDto.class, new UserAnswerDtoAssemblerFactory())
+            .put(QuizQuestion.class, new QuizQuestionAssemblerFactory())
+            .put(FeedbackForSolvedQuiz.class, new CompleteQuizInfoAssemblerFactory())
             .build();
   }
 

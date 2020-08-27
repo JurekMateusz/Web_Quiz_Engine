@@ -1,6 +1,5 @@
 package engine.entity.complete;
 
-import engine.entity.user.User;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -21,9 +20,13 @@ public class CompleteQuizInfo implements Serializable {
   @Column(name = "quiz_id", updatable = false, nullable = false)
   private long quizId;
 
-  @ManyToOne
-  @JoinColumn(name = "user_id")
-  private User user;
+  @Column(name = "user_id")
+  private long userId;
 
+  private LocalDateTime startedAt;
   private LocalDateTime completedAt;
+  private int numberOfQuestions;
+  private int numberOfAnswers;
+  private int correctAnswers;
+  private int wrongAnswers;
 }

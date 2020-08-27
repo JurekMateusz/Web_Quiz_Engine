@@ -1,6 +1,6 @@
 package engine.entity.quiz;
 
 public enum AnswerStatus {
-    CORRECT,
-    NOT_CORRECT;
+  CORRECT,
+  NOT_CORRECT
 }

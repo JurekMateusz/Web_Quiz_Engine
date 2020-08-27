@@ -3,9 +3,13 @@ package engine.util.quizzes;
 public final class QuizzesMapping {
   private static final String BASIC_PATH = "/api";
   public static final String BASIC_QUIZZES_PATH = BASIC_PATH + "/quizzes";
-  public static final String CHECK_ANSWER = BASIC_QUIZZES_PATH + "/{id}/solve";
+  public static final String END_QUIZ = BASIC_QUIZZES_PATH + "/end";
   public static final String CHECK_ANSWER_QUESTION = BASIC_QUIZZES_PATH + "/question/{id}/solve";
+  public static final String ALL_QUIZ_QUESTIONS = BASIC_QUIZZES_PATH + "/start/{id}";
+  public static final String SAVE_USER_ANSWER = BASIC_QUIZZES_PATH + "/user/answer";
+  public static final String QUESTION_ANSWERS = BASIC_QUIZZES_PATH + "/answers/{id}";
   public static final String QUIZ_BY_ID = BASIC_QUIZZES_PATH + "/{id}";
   public static final String ALL_COMPLETED_QUIZZES = BASIC_QUIZZES_PATH + "/completed";
   public static final String DELETE_QUIZ = BASIC_QUIZZES_PATH + "/{id}";
+
 }

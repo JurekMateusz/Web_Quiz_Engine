@@ -12,29 +12,30 @@ import java.util.UUID;
 @Service
 @Transactional
 public class RefreshTokenServiceImpl implements RefreshTokenService {
-    private final RefreshTokenRepository refreshTokenRepo;
+  private final RefreshTokenRepository refreshTokenRepo;
 
-    @Autowired
-    public RefreshTokenServiceImpl(RefreshTokenRepository refreshTokenRepo) {
-        this.refreshTokenRepo = refreshTokenRepo;
-    }
+  @Autowired
+  public RefreshTokenServiceImpl(RefreshTokenRepository refreshTokenRepo) {
+    this.refreshTokenRepo = refreshTokenRepo;
+  }
 
-    @Override
-    public RefreshToken generateRefreshToken() {
-        RefreshToken refreshToken = RefreshToken.builder()
-                .token(UUID.randomUUID().toString())
-                .createdDate(Instant.now())
-                .build();
-        return refreshTokenRepo.save(refreshToken);
-    }
+  @Override
+  public RefreshToken generateRefreshToken() {
+    RefreshToken refreshToken =
+        RefreshToken.builder()
+            .token(UUID.randomUUID().toString())
+            .createdDate(Instant.now())
+            .build();
+    return refreshTokenRepo.save(refreshToken);
+  }
 
-    @Override
-    public boolean isValid(String token) {
-        return refreshTokenRepo.existsByToken(token);
-    }
+  @Override
+  public boolean isValid(String token) {
+    return refreshTokenRepo.existsByToken(token);
+  }
 
-    @Override
-    public void deleteRefreshToken(String token) {
-        refreshTokenRepo.deleteByToken(token);
-    }
+  @Override
+  public void deleteRefreshToken(String token) {
+    refreshTokenRepo.deleteByToken(token);
+  }
 }

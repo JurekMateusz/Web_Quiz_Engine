@@ -3,6 +3,8 @@ package engine.controllers.user;
 import engine.dto.from.token.RefreshTokenRequest;
 import engine.dto.from.user.AuthUserDto;
 import engine.dto.to.auth.AuthenticationResponse;
+import engine.entity.user.User;
+import engine.services.info.UserHelpQuizInfoService;
 import engine.services.token.RefreshTokenService;
 import engine.services.user.UserServiceImpl;
 import engine.util.user.UserMapping;
@@ -22,17 +24,24 @@ import static org.springframework.http.HttpStatus.OK;
 public class UserController {
   private final UserServiceImpl userService;
   private final RefreshTokenService refreshTokenService;
+  private final UserHelpQuizInfoService userHelpQuizInfoService;
 
   @Autowired
-  public UserController(UserServiceImpl userService, RefreshTokenService refreshTokenService) {
+  public UserController(UserServiceImpl userService, RefreshTokenService refreshTokenService, UserHelpQuizInfoService userHelpQuizInfoService) {
     this.userService = userService;
     this.refreshTokenService = refreshTokenService;
+    this.userHelpQuizInfoService = userHelpQuizInfoService;
   }
 
   @PostMapping(UserMapping.REGISTER_USER)
   @ResponseStatus(code = HttpStatus.CREATED)
   public void registerUser(@RequestBody @Valid AuthUserDto userDto) {
-    userService.register(userDto);
+    User user = userService.register(userDto);
+    createUserHelpInfo(user.getId());
+  }
+
+  private void createUserHelpInfo(long userId) {
+    userHelpQuizInfoService.createUserHelpInfo(userId);
   }
 
   @PostMapping(UserMapping.LOGIN_USER)

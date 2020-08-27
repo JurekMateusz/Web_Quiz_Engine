@@ -1,6 +1,9 @@
 package engine.dto.from.token;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
 
@@ -9,8 +12,6 @@ import javax.validation.constraints.NotBlank;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RefreshTokenRequest {
-    @NotBlank
-    private String refreshToken;
-    private String email;
-
+  @NotBlank private String refreshToken;
+  private String email;
 }

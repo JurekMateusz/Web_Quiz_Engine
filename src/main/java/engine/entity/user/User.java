@@ -23,6 +23,6 @@ public class User implements Serializable {
   private String email;
   private String password;
 
-  @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+  @OneToMany(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
   private List<CompleteQuizInfo> completeQuiz;
 }

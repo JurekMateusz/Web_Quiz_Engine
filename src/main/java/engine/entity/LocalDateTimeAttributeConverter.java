@@ -1,4 +1,4 @@
-package engine.entity.complete;
+package engine.entity;
 
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
